@@ -72,7 +72,11 @@ init.row <- function(row, ids) {
   
   out <- c(out, paste('CREATE TABLE', tab.name, '\n(\n'))
   for (i in 1:nrow(attr.tab)) {
-    out <- c(out, paste(attr.tab[[i,'names']], toupper(attr.tab[[i,'dataType']]), ifelse(attr.tab[[i,'optional']],',\n','NOT NULL,\n')))
+    dt <- attr.tab[[i,'dataType']]
+    if (dt == 'varcharn' & !is.na(attr.tab[[i,'dataTypeSize']])) {
+      dt <- paste0('varchar(', attr.tab[[i,'dataTypeSize']], ')')
+    }
+    out <- c(out, paste(attr.tab[[i,'names']], toupper(dt), ifelse(attr.tab[[i,'optional']],',\n','NOT NULL,\n')))
   }
   
   #Will always have at least 1
